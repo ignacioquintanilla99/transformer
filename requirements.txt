@@ -1,3 +1,6 @@
 torch
 pandas
 numpy
+huggingface_hub
+datasets
+tokenizers
