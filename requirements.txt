@@ -4,3 +4,4 @@ numpy
 huggingface_hub
 datasets
 tokenizers
+tensorboard
