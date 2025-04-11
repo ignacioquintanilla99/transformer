@@ -204,7 +204,7 @@ class ProjectionLayer(nn.Module):
         # (Batch, seq_len, d_model) --> (Batch, seq_len, vocab_size)
         # log_softmax for numerical stability
         # return torch.log_softmax(self.proj(x))
-        return torch.log_softmax(self.proj(x), dim = -1) 
+        return self.proj(x)
 
 class Tranformer(nn.Module):
     # One embedding for the source language (English), and one for the output (Spanish)
