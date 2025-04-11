@@ -42,7 +42,7 @@ class PositionalEncoding(nn.Module):
 
     def forward(self, x):
         # Requires grad makes tensor not learned
-        x = x + (self.pe[:, :x.shape[1], :]).requires_grad(False)
+        x = x + (self.pe[:, :x.shape[1], :]).requires_grad_(False)
         return self.dropout(x)
     
 
@@ -211,7 +211,8 @@ class ProjectionLayer(nn.Module):
     def forward(self, x):
         # (Batch, seq_len, d_model) --> (Batch, seq_len, vocab_size)
         # log_softmax for numerical stability
-        return torch.log_softmax(self.proj(x),dim=-1)
+        # return torch.log_softmax(self.proj(x))
+        return torch.log_softmax(self.proj(x), dim = -1)
     
 
 class Tranformer(nn.Module):
@@ -238,7 +239,7 @@ class Tranformer(nn.Module):
         return self.decoder(tgt, encoder_output, src_mask, tgt_mask)
 
     def project(self, x):
-        self.projection_layer(x)
+        return self.projection_layer(x)
 
 
 def build_transfomer(src_vocab_size: int, tgt_vocab_size: int, src_seq_len: int, tgt_seq_len: int, d_model: int = 512, N: int = 6, h: int = 8, dropout: float = 0.1, d_ff: int = 2048) -> Tranformer:
@@ -247,8 +248,8 @@ def build_transfomer(src_vocab_size: int, tgt_vocab_size: int, src_seq_len: int,
     tgt_embed = InputEmbeddings(d_model, tgt_vocab_size)
 
     # Create the positional encoding layers
-    src_pos = PositionalEncoding(d_model, src_embed, dropout)
-    tgt_pos = PositionalEncoding(d_model, src_embed, dropout)
+    src_pos = PositionalEncoding(d_model, src_seq_len, dropout)
+    tgt_pos = PositionalEncoding(d_model, tgt_seq_len, dropout)
 
     # Create the encoder blocks
     encoder_blocks = []

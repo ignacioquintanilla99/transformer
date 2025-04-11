@@ -34,6 +34,7 @@ def get_or_build_tokenizer(config, ds, lang):
         tokenizer.save(str(tokenizer_path))
     else:
         tokenizer =Tokenizer.from_file(str(tokenizer_path))
+    return tokenizer
 
 def get_dataset(config):
     ds_raw = load_dataset('opus_books', f'{config["lang_src"]}-{config["lang_tgt"]}', split='train')
@@ -116,7 +117,7 @@ def train_model(config):
             label = batch['label'].to(device) # (batch, seq_len)
 
             loss = loss_fn(proj_output.view(-1, tokenizer_tgt.get_vocab_size()), label.view(-1))
-            batch.iterator.set_postfix({f"loss":f"{loss.item():6.3f}"})
+            batch_iterator.set_postfix({f"loss":f"{loss.item():6.3f}"})
 
             # Log the loss 
             writer.add_scalar('train loss', loss.item(), global_step)
