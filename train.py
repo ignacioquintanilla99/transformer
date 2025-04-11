@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
-from torch.utils.data import Dataset, DataLoader, random_split
+from torch.utils.data import DataLoader, random_split
 
-from dataset import Bilingualdataset, causal_mask
+from dataset import Bilingualdataset
 from model import build_transfomer
 
 from config import get_weights_file_path, get_config
@@ -117,7 +117,7 @@ def train_model(config):
             label = batch['label'].to(device) # (batch, seq_len)
 
             loss = loss_fn(proj_output.view(-1, tokenizer_tgt.get_vocab_size()), label.view(-1))
-            batch_iterator.set_postfix({f"loss":f"{loss.item():6.3f}"})
+            batch_iterator.set_postfix({"loss":f"{loss.item():6.3f}"})
 
             # Log the loss 
             writer.add_scalar('train loss', loss.item(), global_step)
