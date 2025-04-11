@@ -14,7 +14,6 @@ class InputEmbeddings(nn.Module):
     def forward(self, x):
         return self.embedding(x) * math.sqrt(self.d_model)
     
-
 class PositionalEncoding(nn.Module):
 
     def __init__(self, d_model: int, seq_len: int, dropout: float) -> None:
@@ -45,7 +44,6 @@ class PositionalEncoding(nn.Module):
         x = x + (self.pe[:, :x.shape[1], :]).requires_grad_(False)
         return self.dropout(x)
     
-
 class LayerNormalization(nn.Module):
 
     def __init__(self, eps: float = 10**-6) -> None:
@@ -77,8 +75,6 @@ class FeedForwardBlock(nn.Module):
         # (Batch, seq_len, d_model) --> (Batch, seq_len, d_ff) --> (Batch, seq_len, d_model)
         return self.linear_2(self.dropout(torch.relu(self.linear_1(x))))
     
-
-
 class MultiHeadAttentionBlock(nn.Module):
 
     def __init__(self, d_model: int, h: int, dropout: float) -> None:
@@ -131,7 +127,6 @@ class MultiHeadAttentionBlock(nn.Module):
         # (Batch, seq_len, d_model) --> (Batch, seq_len, d_model)
         return self.w_o(x)
     
-
 class ResidualConnection(nn.Module):
 
     def __init__(self, dropout: float) -> None:
@@ -141,8 +136,7 @@ class ResidualConnection(nn.Module):
         self.norm = LayerNormalization()
 
     def forward(self, x, sublayer):
-        return x + self.dropout(sublayer(self.norm(x)))
-    
+        return x + self.dropout(sublayer(self.norm(x)))    
 
 class EncoderBlock(nn.Module):
 
@@ -171,7 +165,6 @@ class Encoder(nn.Module):
             x = layer(x, mask)
         return self.norm(x)
     
-
 class DecoderBlock(nn.Module):
 
     def __init__(self, self_attention_block: MultiHeadAttentionBlock, cross_attention_block: MultiHeadAttentionBlock, feed_forward_block: FeedForwardBlock, dropout: float) -> None:
@@ -201,7 +194,6 @@ class Decoder(nn.Module):
             x = layer(x, encoder_output, src_mask, tgt_mask)
         return self.norm(x)
 
-
 class ProjectionLayer(nn.Module):
 
     def __init__(self, d_model: int, vocab_size: int) -> None:
@@ -212,8 +204,7 @@ class ProjectionLayer(nn.Module):
         # (Batch, seq_len, d_model) --> (Batch, seq_len, vocab_size)
         # log_softmax for numerical stability
         # return torch.log_softmax(self.proj(x))
-        return torch.log_softmax(self.proj(x), dim = -1)
-    
+        return torch.log_softmax(self.proj(x), dim = -1) 
 
 class Tranformer(nn.Module):
     # One embedding for the source language (English), and one for the output (Spanish)
@@ -240,7 +231,6 @@ class Tranformer(nn.Module):
 
     def project(self, x):
         return self.projection_layer(x)
-
 
 def build_transfomer(src_vocab_size: int, tgt_vocab_size: int, src_seq_len: int, tgt_seq_len: int, d_model: int = 512, N: int = 6, h: int = 8, dropout: float = 0.1, d_ff: int = 2048) -> Tranformer:
     # Create the embedding layer
