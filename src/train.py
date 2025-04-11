@@ -2,10 +2,9 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, random_split
 
-from dataset import Bilingualdataset
-from model import build_transfomer
-
-from config import get_weights_file_path, get_config
+from src.dataset import Bilingualdataset
+from src.model import build_transfomer
+from src.config import get_weights_file_path, get_config
 
 from datasets import load_dataset
 from tokenizers import Tokenizer
